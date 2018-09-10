@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using System.IO;
 
 namespace RidgeRibbon.ViewSheetInfo
 {
@@ -37,7 +39,7 @@ namespace RidgeRibbon.ViewSheetInfo
 
         private String getRdgNumber()
         {
-            StringBuilder rdgNumber = new StringBuilder();
+            /*StringBuilder rdgNumber = new StringBuilder();
 
             String name = this.vSheet.Name.ToString();
 
@@ -71,7 +73,8 @@ namespace RidgeRibbon.ViewSheetInfo
                 this.Rev
                 );
             }
-            return rdgNumber.ToString();
+            return rdgNumber.ToString(); */
+            return "THIS-IS-OLD-GETRDGNUMBER"; // deprecated
         }
 
         private String getParameterAsString(ViewSheet vs, String paramName, String defaultVal)
@@ -106,7 +109,120 @@ namespace RidgeRibbon.ViewSheetInfo
         {
             get
             {
-                return DrawingNumber + "-" + Title;
+                String format = Properties.Settings.Default.FilenameFormat;
+                String[] formatParts = format.Split('<');
+                String separator = "-"; // currently hard coded, might be nice to make this a user option
+
+                List<String> entityList = new List<String>();
+
+                foreach (String fPart in formatParts)
+                {
+                    if (fPart.EndsWith(">"))
+                    {
+                        String partName = fPart.Trim(new char[] { '>', '<' });
+
+                        /*TaskDialog.Show("debug", "Format: " + format + "\r\n"
+                            + "Parts: " + string.Join("|", formatParts) + "\r\n"
+                            + "This Part: " + partName + "\r\n"
+                            + "Filename so far (previous loop): " + string.Join(separator, entityList)); */
+
+                        // cope with standard part names (which match public properties of the PrintSheet class)
+                        if (partName == "ProjectNumber")
+                        {
+                            if (!String.IsNullOrEmpty(this.ProjectNumber))
+                            {
+                                entityList.Add(this.ProjectNumber);
+                            }
+                            continue;
+                        }
+                        if (partName == "RDG")
+                        {
+                            // this is an organisational-level string, so won't be in the project. Simply return the string.
+                            entityList.Add("RDG");
+                            continue;
+                        }
+                        if (partName == "Zone")
+                        {
+                            if (!String.IsNullOrEmpty(this.Zone))
+                            {
+                                entityList.Add(this.Zone);
+                            }
+                            continue;
+                        }
+                        if (partName == "Level")
+                        {
+                            if (!String.IsNullOrEmpty(this.Level))
+                            {
+                                entityList.Add(this.Level);
+                            }
+                            continue;
+                        }
+                        if (partName == "Type")
+                        {
+                            if (!String.IsNullOrEmpty(this.Type))
+                            {
+                                entityList.Add(this.Type);
+                            }
+                            continue;
+                        }
+                        if (partName == "Role")
+                        {
+                            if (!String.IsNullOrEmpty(this.Role))
+                            {
+                                entityList.Add(this.Role);
+                            }
+                            continue;
+                        }
+                        if (partName == "Number")
+                        {
+                            if (!String.IsNullOrEmpty(this.Number))
+                            {
+                                entityList.Add(this.Number);
+                            }
+                            continue;
+                        }
+                        if (partName == "Revision")
+                        {
+                            if (!String.IsNullOrEmpty(this.Rev))
+                            {
+                                entityList.Add(this.Rev);
+                            }
+                            continue;
+                        }
+                        if (partName == "Title")
+                        {
+                            if (!String.IsNullOrEmpty(this.Title))
+                            {
+                                entityList.Add(this.Title);
+                            }
+                            continue;
+                        }
+                        else
+                        {
+                            // a non-standard paramater has been requested. check if it exists and if so add it to the list.
+                            String tryGetParameter = getParameterAsString(vSheet, partName, "");
+                            if (!String.IsNullOrEmpty(tryGetParameter))
+                            {
+                                entityList.Add(tryGetParameter);
+                            } else
+                            {
+                                //entityList.Add(partName); // don't do anything - this is a parameter with no value.
+                            }
+                        }
+                    }
+                }
+                if (entityList.Count == 0)
+                {
+                    throw new Exception("Filename format is invalid - cannot construct any filename for sheet.");
+                }
+                return SanitiseFilename(string.Join(separator, entityList));
+            }
+        }
+        public string ProjectNumber
+        {
+            get
+            {
+                return this.doc.ProjectInformation.Number;
             }
         }
         public string Zone
@@ -300,6 +416,17 @@ namespace RidgeRibbon.ViewSheetInfo
                     return "";
                 }
             }
+        }
+
+        private string SanitiseFilename(string testName)
+        {
+            var pattern = Path.GetInvalidFileNameChars();
+            foreach (char invalidChar in Path.GetInvalidFileNameChars())
+            {
+                testName = testName.Replace(invalidChar, '-');
+            }
+
+            return testName;
         }
     }
 }

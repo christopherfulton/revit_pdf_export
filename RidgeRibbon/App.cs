@@ -41,7 +41,7 @@ namespace RidgeRibbon
             // create push button for ViewSheetInfo
             PushButtonData b2Data = new PushButtonData(
                 "cmdViewSheetInfo",
-                "Print" + System.Environment.NewLine + "   Sheets to PDF  ",
+                "Print Sheets" + System.Environment.NewLine + " to PDF & DWG ",
                 thisAssemblyPath,
                 "RidgeRibbon.ViewSheetInfo.Command");
 

@@ -1,0 +1,24 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="RidgeRibbon.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="OutputDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="FilenameFormat" Type="System.String" Scope="User">
+      <Value Profile="(Default)">&lt;ProjectNumber&gt;&lt;RDG&gt;&lt;Zone&gt;&lt;Level&gt;&lt;Type&gt;&lt;Role&gt;&lt;Number&gt;&lt;Revision&gt;&lt;Title&gt;</Value>
+    </Setting>
+    <Setting Name="RidgeDefaultFormat" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">&lt;ProjectNumber&gt;&lt;RDG&gt;&lt;Zone&gt;&lt;Level&gt;&lt;Type&gt;&lt;Role&gt;&lt;Number&gt;&lt;Revision&gt;&lt;Title&gt;</Value>
+    </Setting>
+    <Setting Name="DWGExport" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ProduceDebugReport" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="VectorProcessing" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

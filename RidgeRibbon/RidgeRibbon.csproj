@@ -29,17 +29,25 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2018|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\..\..\..\..\ProgramData\Autodesk\Revit\Addins\2018\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;RELEASE2018</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2017|AnyCPU'">
-    <OutputPath>I:\Digital Design Deposit Folder\01- REVIT\Ridge-developed plugins\2017\</OutputPath>
+    <OutputPath>..\..\..\..\..\..\ProgramData\Autodesk\Revit\Addins\2017\</OutputPath>
     <DefineConstants>RELEASE2017</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2018|AnyCPU'">
-    <OutputPath>I:\Digital Design Deposit Folder\01- REVIT\Ridge-developed plugins\2018\</OutputPath>
-    <DefineConstants>RELEASE2018</DefineConstants>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2016|AnyCPU'">
-    <OutputPath>I:\Digital Design Deposit Folder\01- REVIT\Ridge-developed plugins\2016\</OutputPath>
+    <OutputPath>..\..\..\..\..\..\ProgramData\Autodesk\Revit\Addins\2016\</OutputPath>
     <DefineConstants>RELEASE2016</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
@@ -81,6 +89,11 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="ViewPrinterSDK\PrintSetupForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -116,6 +129,12 @@
       <DependentUpon>ViewSheetSetForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ViewSheetInfo\Command.cs" />
+    <Compile Include="ViewSheetInfo\Debug.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ViewSheetInfo\Debug.Designer.cs">
+      <DependentUpon>Debug.cs</DependentUpon>
+    </Compile>
     <Compile Include="ViewSheetInfo\PrintPDFForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -128,15 +147,7 @@
     <Resource Include="Resources\ridgeIcon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="RidgeRibbon2017.addin" Condition=" '$(Configuration)' == '2017'">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="RidgeRibbon2016.addin" Condition=" '$(Configuration)' == '2016'">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
-	<Content Include="RidgeRibbon2018.addin" Condition=" '$(Configuration)' == '2018'">
+    <Content Include="RidgeRibbon.addin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
@@ -158,9 +169,23 @@
     <EmbeddedResource Include="ViewPrinterSDK\ViewSheetSetForm.resx">
       <DependentUpon>ViewSheetSetForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ViewSheetInfo\Debug.resx">
+      <DependentUpon>Debug.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ViewSheetInfo\PrintPDFForm.resx">
       <DependentUpon>PrintPDFForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "I:\Digital Design Deposit Folder\01- REVIT\_Revit Plugins\$(ConfigurationName)"
+copy "$(TargetDir)RidgeRibbon.addin" "I:\Digital Design Deposit Folder\01- REVIT\_Revit Plugins\$(ConfigurationName)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
