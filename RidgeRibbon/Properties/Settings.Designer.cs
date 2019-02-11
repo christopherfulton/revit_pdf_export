@@ -12,7 +12,7 @@ namespace RidgeRibbon.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.7.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.8.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -89,6 +89,246 @@ namespace RidgeRibbon.Properties {
             }
             set {
                 this["VectorProcessing"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IssueRVTEnable {
+            get {
+                return ((bool)(this["IssueRVTEnable"]));
+            }
+            set {
+                this["IssueRVTEnable"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IssueNWFEnable {
+            get {
+                return ((bool)(this["IssueNWFEnable"]));
+            }
+            set {
+                this["IssueNWFEnable"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IssueIFCEnable {
+            get {
+                return ((bool)(this["IssueIFCEnable"]));
+            }
+            set {
+                this["IssueIFCEnable"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IssueDWFEnable {
+            get {
+                return ((bool)(this["IssueDWFEnable"]));
+            }
+            set {
+                this["IssueDWFEnable"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string IssueRVTFilename {
+            get {
+                return ((string)(this["IssueRVTFilename"]));
+            }
+            set {
+                this["IssueRVTFilename"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string IssueNWFFilename {
+            get {
+                return ((string)(this["IssueNWFFilename"]));
+            }
+            set {
+                this["IssueNWFFilename"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string IssueIFCFilename {
+            get {
+                return ((string)(this["IssueIFCFilename"]));
+            }
+            set {
+                this["IssueIFCFilename"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string IssueDWFFilename {
+            get {
+                return ((string)(this["IssueDWFFilename"]));
+            }
+            set {
+                this["IssueDWFFilename"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string IssueRVTDir {
+            get {
+                return ((string)(this["IssueRVTDir"]));
+            }
+            set {
+                this["IssueRVTDir"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string IssueNWFDir {
+            get {
+                return ((string)(this["IssueNWFDir"]));
+            }
+            set {
+                this["IssueNWFDir"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string IssueIFCDir {
+            get {
+                return ((string)(this["IssueIFCDir"]));
+            }
+            set {
+                this["IssueIFCDir"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string IssueDWFDir {
+            get {
+                return ((string)(this["IssueDWFDir"]));
+            }
+            set {
+                this["IssueDWFDir"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public string RoomSheetNumberPrefix {
+            get {
+                return ((string)(this["RoomSheetNumberPrefix"]));
+            }
+            set {
+                this["RoomSheetNumberPrefix"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public int RoomSheetScale {
+            get {
+                return ((int)(this["RoomSheetScale"]));
+            }
+            set {
+                this["RoomSheetScale"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("A1L")]
+        public string RoomSheetTitleblock {
+            get {
+                return ((string)(this["RoomSheetTitleblock"]));
+            }
+            set {
+                this["RoomSheetTitleblock"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string RoomSheetFloorPlanTemplate {
+            get {
+                return ((string)(this["RoomSheetFloorPlanTemplate"]));
+            }
+            set {
+                this["RoomSheetFloorPlanTemplate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string RoomSheetCeilingPlanTemplate {
+            get {
+                return ((string)(this["RoomSheetCeilingPlanTemplate"]));
+            }
+            set {
+                this["RoomSheetCeilingPlanTemplate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string RoomSheetElevationTemplate {
+            get {
+                return ((string)(this["RoomSheetElevationTemplate"]));
+            }
+            set {
+                this["RoomSheetElevationTemplate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        public double ExpandElevation {
+            get {
+                return ((double)(this["ExpandElevation"]));
+            }
+            set {
+                this["ExpandElevation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        public double ExpandPlans {
+            get {
+                return ((double)(this["ExpandPlans"]));
+            }
+            set {
+                this["ExpandPlans"] = value;
             }
         }
     }

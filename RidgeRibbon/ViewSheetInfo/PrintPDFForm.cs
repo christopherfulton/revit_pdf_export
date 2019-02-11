@@ -536,6 +536,7 @@ namespace RidgeRibbon.ViewSheetInfo
                     DWGExportOptions dwgExportOptions = new DWGExportOptions();
                     dwgExportOptions.MergedViews = true;
                     dwgExportOptions.SharedCoords = true;
+                    dwgExportOptions.Colors = ExportColorMode.TrueColor;
                     dwgExportOptions.FileVersion = ACADVersion.R2013; //assume 2013 here, if not go back to 2007.
 
                     ICollection<ElementId> views = new List<ElementId>();
@@ -552,7 +553,9 @@ namespace RidgeRibbon.ViewSheetInfo
 
             }
 
-            
+            // save the file output directory settings for next time (in case location has been pasted in)
+            Properties.Settings.Default.OutputDirectory = tbSaveToDir.Text;
+            Properties.Settings.Default.Save();
 
             // when finished, exit the form
             this.Close();
@@ -616,6 +619,9 @@ namespace RidgeRibbon.ViewSheetInfo
             // this plugin gives us issues in worksharing environments when trying to overwrite print settings or viewsheetsets. So, we switch the user to use in-session print settings.
             m_printMgr.PrintSetup.CurrentPrintSetting = m_printMgr.PrintSetup.InSession;
             //m_printMgr.ViewSheetSetting.CurrentViewSheetSet = m_printMgr.ViewSheetSetting.InSession;
+
+            // by default, sort the datagridview by sheet Number
+            dgvSheets.Sort(dgvSheets.Columns["Number"], ListSortDirection.Ascending);
             
         }
 

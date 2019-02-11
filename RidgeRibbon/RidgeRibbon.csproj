@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RidgeRibbon</RootNamespace>
     <AssemblyName>RidgeRibbon</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,48 +32,60 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2018|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\..\..\..\..\..\ProgramData\Autodesk\Revit\Addins\2018\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;RELEASE2018</DefineConstants>
+    <OutputPath>bin\2018\</OutputPath>
+    <DefineConstants>RELEASE2018</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2017|AnyCPU'">
-    <OutputPath>..\..\..\..\..\..\ProgramData\Autodesk\Revit\Addins\2017\</OutputPath>
+    <OutputPath>bin\2017\</OutputPath>
     <DefineConstants>RELEASE2017</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2016|AnyCPU'">
-    <OutputPath>..\..\..\..\..\..\ProgramData\Autodesk\Revit\Addins\2016\</OutputPath>
+    <OutputPath>bin\2016\</OutputPath>
     <DefineConstants>RELEASE2016</DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2019|AnyCPU'">
+    <DefineConstants>RELEASE2019</DefineConstants>
+    <OutputPath>bin\2019\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
+    <Reference Include="RevitAPI" Condition=" '$(Configuration)' == '2019'">
+      <HintPath>D:\Program Files\Autodesk\Revit 2019\RevitAPI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="RevitAPIUI" Condition=" '$(Configuration)' == '2019'">
+      <HintPath>D:\Program Files\Autodesk\Revit 2019\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="RevitAPI" Condition=" '$(Configuration)' == '2018'">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2018\RevitAPI.dll</HintPath>
+      <HintPath>D:\Program Files\Autodesk\Revit 2018\RevitAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI" Condition=" '$(Configuration)' == '2018'">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2018\RevitAPIUI.dll</HintPath>
+      <HintPath>D:\Program Files\Autodesk\Revit 2018\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPI" Condition=" '$(Configuration)' == '2017'">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2017\RevitAPI.dll</HintPath>
+      <HintPath>D:\Program Files\Autodesk\Revit 2017\RevitAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI" Condition=" '$(Configuration)' == '2017'">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2017\RevitAPIUI.dll</HintPath>
+      <HintPath>D:\Program Files\Autodesk\Revit 2017\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPI" Condition=" '$(Configuration)' == '2016'">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2016\RevitAPI.dll</HintPath>
+      <HintPath>C:\Program Files\Autodesk\Revit 2016\RevitAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI" Condition=" '$(Configuration)' == '2016'">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2016\RevitAPIUI.dll</HintPath>
+      <HintPath>C:\Program Files\Autodesk\Revit 2016\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -88,45 +101,38 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
+    <Compile Include="DuplicateSheet\Command.cs" />
+    <Compile Include="DuplicateSheet\DuplicateSheetForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DuplicateSheet\DuplicateSheetForm.Designer.cs">
+      <DependentUpon>DuplicateSheetForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IssueModel\Command.cs" />
+    <Compile Include="IssueModel\IssueModelForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="IssueModel\IssueModelForm.Designer.cs">
+      <DependentUpon>IssueModelForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="ViewPrinterSDK\PrintSetupForm.cs">
+    <Compile Include="RoomSheets\Command.cs" />
+    <Compile Include="RoomSheets\CommandSettings.cs" />
+    <Compile Include="RoomSheets\RoomSheetSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ViewPrinterSDK\PrintSetupForm.designer.cs">
-      <DependentUpon>PrintSetupForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ViewPrinterSDK\SaveAsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ViewPrinterSDK\SaveAsForm.Designer.cs">
-      <DependentUpon>SaveAsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ViewPrinterSDK\ReNameForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ViewPrinterSDK\ReNameForm.Designer.cs">
-      <DependentUpon>ReNameForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ViewPrinterSDK\PrintSTP.cs" />
-    <Compile Include="ViewPrinterSDK\PrintMgrForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ViewPrinterSDK\PrintMgrForm.Designer.cs">
-      <DependentUpon>PrintMgrForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ViewPrinterSDK\PrintMgr.cs" />
-    <Compile Include="ViewPrinterSDK\Command.cs" />
-    <Compile Include="ViewPrinterSDK\ViewSheets.cs" />
-    <Compile Include="ViewPrinterSDK\ViewSheetSetForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ViewPrinterSDK\ViewSheetSetForm.Designer.cs">
-      <DependentUpon>ViewSheetSetForm.cs</DependentUpon>
+    <Compile Include="RoomSheets\RoomSheetSettings.Designer.cs">
+      <DependentUpon>RoomSheetSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="ViewSheetInfo\Command.cs" />
     <Compile Include="ViewSheetInfo\Debug.cs">
@@ -147,34 +153,16 @@
     <Resource Include="Resources\ridgeIcon.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\678069-sign-error-5121.png" />
+    <Resource Include="Resources\duplicatesheets.png" />
+    <Resource Include="Resources\Tick_Mark_Dark-512.png" />
+    <None Include="Resources\Tick_Mark_Dark-5121.png" />
+    <Content Include="Resources\dialog-error-icon.png" />
+    <Resource Include="Resources\room_icon.png" />
     <Content Include="RidgeRibbon.addin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ViewPrinterSDK\PrintMgrForm.resx">
-      <DependentUpon>PrintMgrForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ViewPrinterSDK\PrintSetupForm.resx">
-      <DependentUpon>PrintSetupForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ViewPrinterSDK\ReNameForm.resx">
-      <DependentUpon>ReNameForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ViewPrinterSDK\SaveAsForm.resx">
-      <DependentUpon>SaveAsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ViewPrinterSDK\ViewSheetSetForm.resx">
-      <DependentUpon>ViewSheetSetForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ViewSheetInfo\Debug.resx">
-      <DependentUpon>Debug.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ViewSheetInfo\PrintPDFForm.resx">
-      <DependentUpon>PrintPDFForm.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -183,9 +171,31 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DuplicateSheet\DuplicateSheetForm.resx">
+      <DependentUpon>DuplicateSheetForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IssueModel\IssueModelForm.resx">
+      <DependentUpon>IssueModelForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RoomSheets\RoomSheetSettings.resx">
+      <DependentUpon>RoomSheetSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewSheetInfo\Debug.resx">
+      <DependentUpon>Debug.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewSheetInfo\PrintPDFForm.resx">
+      <DependentUpon>PrintPDFForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "I:\Digital Design Deposit Folder\01- REVIT\_Revit Plugins\$(ConfigurationName)"
-copy "$(TargetDir)RidgeRibbon.addin" "I:\Digital Design Deposit Folder\01- REVIT\_Revit Plugins\$(ConfigurationName)"</PostBuildEvent>
+    <PostBuildEvent>move "$(TargetDir)$(TargetFileName)" "$(TargetDir)RidgeRibbonRevit$(ConfigurationName).dll"
+copy "$(TargetDir)RidgeRibbonRevit$(ConfigurationName).dll" "D:\dev\revit\source\repos\RidgeRibbon\RidgeRibbonInstaller"
+copy "$(TargetDir)RidgeRibbonRevit$(ConfigurationName).dll" "C:\Users\cfulton\AppData\Roaming\Autodesk\Revit\Addins\2019"</PostBuildEvent>
   </PropertyGroup>
 </Project>
