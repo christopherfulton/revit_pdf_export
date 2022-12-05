@@ -196,6 +196,6 @@
   <PropertyGroup>
     <PostBuildEvent>move "$(TargetDir)$(TargetFileName)" "$(TargetDir)RidgeRibbonRevit$(ConfigurationName).dll"
 copy "$(TargetDir)RidgeRibbonRevit$(ConfigurationName).dll" "D:\dev\revit\source\repos\RidgeRibbon\RidgeRibbonInstaller"
-copy "$(TargetDir)RidgeRibbonRevit$(ConfigurationName).dll" "C:\Users\cfulton\AppData\Roaming\Autodesk\Revit\Addins\2019"</PostBuildEvent>
+copy "$(TargetDir)RidgeRibbonRevit$(ConfigurationName).dll" "C:\Users\cfulton\AppData\Roaming\Autodesk\Revit\Addins\$(ConfigurationName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

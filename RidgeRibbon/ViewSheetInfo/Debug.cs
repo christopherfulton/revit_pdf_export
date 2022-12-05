@@ -12,10 +12,19 @@ namespace RidgeRibbon.ViewSheetInfo
 {
     public partial class Debug : Form
     {
-        public Debug(String report)
+        private PrintPDFForm _ParentForm;
+
+        public Debug(String report, PrintPDFForm parentForm)
         {
             InitializeComponent();
             tbDebug.Text = report;
+            _ParentForm = parentForm;
+        }
+
+        public void AddLine(String line)
+        {
+            tbDebug.AppendText("\r\n");
+            tbDebug.AppendText(line);
         }
     }
 }

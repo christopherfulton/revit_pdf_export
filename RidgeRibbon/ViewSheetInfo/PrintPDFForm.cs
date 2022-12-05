@@ -213,14 +213,20 @@ namespace RidgeRibbon.ViewSheetInfo
         private void btnPrint_Click(object sender, EventArgs e)
         {
 
-            // debug
-            StringBuilder dbg = new StringBuilder();
+            // keep track of the active view before the print button was pressed.
+            UIDocument uidoc = m_command.Application.ActiveUIDocument;
+            Autodesk.Revit.DB.View originalActiveView = uidoc.ActiveView;
+            
+
+            dbgLine("New Print Job started...");
+            dbgLine(DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToLongTimeString());
+            dbgLine(" ");
 
             //TaskDialog.Show("Print Settings", m_printMgr.PrintSetup.CurrentPrintSetting.ToString());
             m_printMgr.PrintSetup.CurrentPrintSetting = m_printMgr.PrintSetup.InSession;
             m_printMgr.Apply();
 
-            dbg.AppendLine("m_printMgr.PrintSetup.CurrentPrintSetting = " + m_printMgr.PrintSetup.CurrentPrintSetting.ToString());
+            dbgLine("m_printMgr.PrintSetup.CurrentPrintSetting = " + m_printMgr.PrintSetup.CurrentPrintSetting.ToString());
 
             // save whatever's in the output directory textbox to the properties
             Properties.Settings.Default.OutputDirectory = tbSaveToDir.Text;
@@ -246,17 +252,27 @@ namespace RidgeRibbon.ViewSheetInfo
                 return;
             }
 
-            dbg.AppendLine("Showed print confirm taskDialog for " + m_SendToPrint.Count() + " sheets.");
+            dbgLine("Showed print confirm taskDialog for " + m_SendToPrint.Count() + " sheets.");
 
 
             foreach (PrintSheet ps in m_SendToPrint)
             {
-                
+
+                Guid tmpGuid = Guid.NewGuid();
+
+                dbgLine("Created GUID for this sheet, " + tmpGuid.ToString());
+
+                Autodesk.Revit.DB.View thisView = ps.vSheet as Autodesk.Revit.DB.View;
+
+                // set the current active view to be the one you next want to print
+                dbgLine("Setting view " + thisView.Name + " to be the active view");
+                uidoc.ActiveView = thisView;
+
                 // set the relevant settings in the printmanager for this sheet
                 using (Transaction tran = new Transaction(m_doc, "setup"))
                 {
                     tran.Start();
-                    dbg.AppendLine("Starting transaction...");
+                    dbgLine("Starting transaction...");
 
                     //m_printMgr.PrintSetup.CurrentPrintSetting = m_printMgr.PrintSetup.InSession;
                     //TaskDialog.Show("Print Settings after Transaction start", m_printMgr.PrintSetup.CurrentPrintSetting.ToString());
@@ -267,7 +283,7 @@ namespace RidgeRibbon.ViewSheetInfo
                         if (psource.Name.Equals("<default tray>"))
                         {
                             m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.PaperSource = psource;
-                            dbg.AppendLine("Set paper source to " + m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.PaperSource.Name);
+                            dbgLine("Set paper source to " + m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.PaperSource.Name);
                             break;
                         }
                     }
@@ -279,16 +295,16 @@ namespace RidgeRibbon.ViewSheetInfo
                         if (paperSize.Name == ps.ASize)
                         {
                             pp.PaperSize = paperSize;
-                            dbg.AppendLine("Set paper size to " + paperSize.Name);
+                            dbgLine("Set paper size to " + paperSize.Name);
                         }
                     }
 
                     if (pp.PaperSize.Name != ps.ASize)
                     {
                         TaskDialog taskDialog = new TaskDialog("Paper Size Error");
-                        taskDialog.MainContent = "Sheet " + ps.Filename + " with paper size " + ps.ASize + " cannot be printed by this plugin.";
+                        taskDialog.MainContent = "Sheet " + ps.Filename + " with paper size " + ps.ASize + " cannot be printed by this plugin. You need to use standard Ridge titleblocks (or rename your custom ones), with names that start 'A1L', 'A2P' for example. The first two characters define the paper size (A1, A2, A3) and the third character defines the orientation (L for landscape, P for portrait).";
                         taskDialog.Show();
-                        dbg.AppendLine("Sheet " + ps.Filename + " with paper size " + ps.ASize + " cannot be printed by this plugin.");
+                        dbgLine("Sheet " + ps.Filename + " with paper size " + ps.ASize + " cannot be printed by this plugin. You need to use standard Ridge titleblocks (or rename your custom ones), with names that start 'A1L', 'A2P' for example. The first two characters define the paper size (A1, A2, A3) and the third character defines the orientation (L for landscape, P for portrait).");
                         tran.RollBack();
                         continue;
                     }
@@ -296,12 +312,12 @@ namespace RidgeRibbon.ViewSheetInfo
                     if (ps.Orientation == "L")
                     {
                         pp.PageOrientation = PageOrientationType.Landscape;
-                        dbg.AppendLine("Orientation: Landscape");
+                        dbgLine("Orientation: Landscape");
                     }
                     else if (ps.Orientation == "P")
                     {
                         pp.PageOrientation = PageOrientationType.Portrait;
-                        dbg.AppendLine("Orientation: Portrait");
+                        dbgLine("Orientation: Portrait");
                     }
                     else if (ps.Orientation == "")
                     {
@@ -309,8 +325,8 @@ namespace RidgeRibbon.ViewSheetInfo
                         taskDialog.MainContent = "Sheet " + ps.Filename + " has no orientation (landscape or portrait) and cannot be printed by this printer. Please use a Ridge titleblock which begins 'A1L' or similar.";
                         taskDialog.Show();
                         tran.RollBack();
-                        dbg.AppendLine("Sheet " + ps.Filename + " has no orientation (landscape or portrait) and cannot be printed by this printer. Please use a Ridge titleblock which begins 'A1L' or similar.");
-                        dbg.AppendLine("ps.Orientation is set to a blank string.");
+                        dbgLine("Sheet " + ps.Filename + " has no orientation (landscape or portrait) and cannot be printed by this printer. Please use a Ridge titleblock which begins 'A1L' or similar.");
+                        dbgLine("ps.Orientation is set to a blank string.");
                         continue;
                     }
                     else
@@ -319,14 +335,14 @@ namespace RidgeRibbon.ViewSheetInfo
                         taskDialog.MainContent = "Sheet " + ps.Filename + " with orientation '" + ps.Orientation + "' cannot be printed by this plugin. Adobe PDF Printer does not recognise the paper orientation.";
                         taskDialog.Show();
                         tran.RollBack();
-                        dbg.AppendLine("Sheet " + ps.Filename + " with orientation '" + ps.Orientation + "' cannot be printed by this plugin. Adobe PDF Printer does not recognise the paper orientation.");
-                        dbg.AppendLine("ps.Orientation is neither a blank string nor a recognised orientation (L or P).");
+                        dbgLine("Sheet " + ps.Filename + " with orientation '" + ps.Orientation + "' cannot be printed by this plugin. Adobe PDF Printer does not recognise the paper orientation.");
+                        dbgLine("ps.Orientation is neither a blank string nor a recognised orientation (L or P).");
                         continue;
                     }
 
                     // set the paper placement to center, no scaling
                     m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.PaperPlacement = PaperPlacementType.Center;
-                    dbg.AppendLine("Paper Placement Type: " + m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.PaperPlacement.ToString());
+                    dbgLine("Paper Placement Type: " + m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.PaperPlacement.ToString());
                     // debug1.Text += " " + m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.PaperPlacement.ToString();
 
                     // set the margin type (not needed since we're using Center)
@@ -337,11 +353,11 @@ namespace RidgeRibbon.ViewSheetInfo
                     if (cbVector.Checked)
                     {
                         m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.HiddenLineViews = HiddenLineViewsType.VectorProcessing;
-                        dbg.AppendLine("Hidden line view type: " + m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.HiddenLineViews.ToString());
+                        dbgLine("Hidden line view type: " + m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.HiddenLineViews.ToString());
                     } else
                     {
                         m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.HiddenLineViews = HiddenLineViewsType.RasterProcessing;
-                        dbg.AppendLine("Hidden line view type: " + m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.HiddenLineViews.ToString());
+                        dbgLine("Hidden line view type: " + m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.HiddenLineViews.ToString());
                     }
 
                     
@@ -349,28 +365,28 @@ namespace RidgeRibbon.ViewSheetInfo
 
                     // set the zoom type
                     m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.ZoomType = ZoomType.Zoom;
-                    dbg.AppendLine("Zoom type: " + m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.ZoomType.ToString());
+                    dbgLine("Zoom type: " + m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.ZoomType.ToString());
                     //debug1.Text += " " + m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.ZoomType.ToString();
 
                     // set the zoom
                     m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.Zoom = 100;
-                    dbg.AppendLine("Zoom value: " + m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.Zoom.ToString());
+                    dbgLine("Zoom value: " + m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.Zoom.ToString());
 
                     // raster quality type
                     m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.RasterQuality = RasterQualityType.High;
-                    dbg.AppendLine("Raster Quality type: " + m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.RasterQuality.ToString());
+                    dbgLine("Raster Quality type: " + m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.RasterQuality.ToString());
 
                     // color
                     m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.ColorDepth = ColorDepthType.Color;
-                    dbg.AppendLine("Color depth type: "+ m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.ColorDepth.ToString());
+                    dbgLine("Color depth type: "+ m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.ColorDepth.ToString());
 
                     // combined file
                     m_printMgr.CombinedFile = true;
-                    dbg.AppendLine("Combined file: " + m_printMgr.CombinedFile.ToString());
+                    dbgLine("Combined file: " + m_printMgr.CombinedFile.ToString());
 
                     // force printrange to select
-                    m_printMgr.PrintRange = PrintRange.Select;
-                    dbg.AppendLine("Print range: " + m_printMgr.PrintRange.ToString());
+                    m_printMgr.PrintRange = PrintRange.Current;
+                    dbgLine("Print range: " + m_printMgr.PrintRange.ToString());
 
                     m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.ViewLinksinBlue = false;
                     m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.HideScopeBoxes = true;
@@ -378,20 +394,36 @@ namespace RidgeRibbon.ViewSheetInfo
                     m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.HideCropBoundaries = true;
                     m_printMgr.PrintSetup.CurrentPrintSetting.PrintParameters.HideUnreferencedViewTags = true;
 
+
                     
 
-                    Autodesk.Revit.DB.View thisView = ps.vSheet as Autodesk.Revit.DB.View;
+                    
+                    
+
+                    // use ViewSheetSets to ensure correct print handling. ViewSheetSet support is a bit patchy and buggy across Revit installs and for workshared projects.
+
+                    /*
+                    
                     ViewSet viewSet = new ViewSet();
 
                     viewSet.Insert(thisView);
-                    dbg.AppendLine("Adding this view (" + thisView.Name + ") to a temporary viewSet");
-                    ViewSheetSetting viewSheetSetting = m_printMgr.ViewSheetSetting;
+                    dbgLine("Adding this view (" + thisView.Name + ") to a temporary viewSet");
+                    try
+                    {
+                        ViewSheetSetting viewSheetSetting = m_printMgr.ViewSheetSetting;
+                    } catch
+                    {
+                        dbgLine("Failed to save/update the named viewsheetset");
+
+                    }
+                    
+                    
                     
                     m_printMgr.ViewSheetSetting.CurrentViewSheetSet = m_printMgr.ViewSheetSetting.InSession;
 
-                    dbg.AppendLine("Setting the CurrentViewSheetSet to insession: " + m_printMgr.ViewSheetSetting.CurrentViewSheetSet.ToString());
+                    dbgLine("Setting the CurrentViewSheetSet to insession: " + m_printMgr.ViewSheetSetting.CurrentViewSheetSet.ToString());
 
-                    IViewSheetSet viewSheetSet = viewSheetSetting.CurrentViewSheetSet;
+                    IViewSheetSet viewSheetSet = m_printMgr.ViewSheetSetting.CurrentViewSheetSet;
                     if (viewSheetSet is ViewSheetSet)
                     {
                         // if the CurrentViewSheetSet is one view sheet set of print setup, such as "set 1"
@@ -400,10 +432,10 @@ namespace RidgeRibbon.ViewSheetInfo
                         // we save the changes for the current view sheet set
                         try
                         {
-                            dbg.AppendLine("Trying to save/update a named viewsheetset...");
-                            viewSheetSetting.Save();
+                            dbgLine("Trying to save/update a named viewsheetset...");
+                            m_printMgr.ViewSheetSetting.Save();
                         } catch {
-                            dbg.AppendLine("Failed to save/update the named viewsheetset");
+                            dbgLine("Failed to save/update the named viewsheetset");
                         }
                     }
                     else if (viewSheetSet is InSessionViewSheetSet)
@@ -414,25 +446,39 @@ namespace RidgeRibbon.ViewSheetInfo
 
                         try
                         {
-                            dbg.AppendLine("Trying to SaveAs viewsheetset (from in-session): " + "_tmp" + ps.Filename + "...");
-                            viewSheetSetting.SaveAs("_tmp" + ps.Filename);
+                            dbgLine("Trying to SaveAs viewsheetset (from in-session): " + "_tmp" + tmpGuid.ToString() + ps.Filename);
+                            //m_printMgr.ViewSheetSetting.SaveAs("_tmp" + tmpGuid.ToString() + ps.Filename);
                         } catch {
-                            dbg.AppendLine("Couldn't save viewsheetset " + "_tmp" + ps.Filename + ", continuing");
+                            dbgLine("Couldn't save viewsheetset " + "_tmp" + tmpGuid.ToString() + ps.Filename + ", continuing");
                         }
                         viewSheetSet.Views = viewSet;
-                        
+                        dbgLine("No error caught.");
                     }
-
+                    */
+                    
                     
                     try
                     {
                         m_printMgr.PrintSetup.SaveAs("RidgePluginPrintSettings_DO NOT USE");
-                        dbg.AppendLine("SavedAs() the printSetup to RidgePluginPrintSettings_ DO NOT USE");
+                        dbgLine("SavedAs() the printSetup to RidgePluginPrintSettings_ DO NOT USE");
                     }
                     catch (Exception ex) {
-                        dbg.AppendLine("Trying to SaveAs() this m_printMgr.PrintSetup to RidgePluginPrintSettings_DO NOT USE. Continuing without error. Message reads:");
-                        dbg.AppendLine(ex.Message);
+                        dbgLine("Trying to SaveAs() this m_printMgr.PrintSetup to RidgePluginPrintSettings_DO NOT USE failed. Continuing without error. Message reads:");
+                        dbgLine(ex.Message);
+                        try
+                        {
+                            dbgLine("Current m_printMgr.PrintSetup is " + m_printMgr.PrintSetup.ToString());
+                            dbgLine("Saving PrintSetup.");
+                            bool printSetupSaveSuccess = m_printMgr.PrintSetup.Save();
+                            dbgLine("Result of Print Setup Save is: " + printSetupSaveSuccess.ToString());
+                        } catch
+                        {
+                            dbgLine("Error saving m_printMgr.PrintSetup. Message reads:");
+                            dbgLine(ex.Message);
+                        }
                     }
+
+                    
 
                     m_printMgr.Apply();
                     tran.Commit();
@@ -441,28 +487,25 @@ namespace RidgeRibbon.ViewSheetInfo
 
                 string fullFilePath;
 
-                if (tbSaveToDir.Text.EndsWith(@"\"))
-                {
-                    fullFilePath = tbSaveToDir.Text + ps.Filename + ".pdf";
-                }
-                else
-                {
-                    fullFilePath = tbSaveToDir.Text + @"\" + ps.Filename + ".pdf";
-                }
+                // check file path isn't too long
+                int fileNameLength = tbSaveToDir.Text.Length + ps.Filename.Length + ".pdf".Length;
+                dbgLine("File path length is: " + fileNameLength.ToString() + " characters.");
 
-                dbg.AppendLine("Setting up file path for PDF and DWG: " + fullFilePath);
+                fullFilePath = Path.Combine(tbSaveToDir.Text, ps.Filename + ".pdf");
 
+                dbgLine("Setting up file path for PDF: " + fullFilePath);
 
+                
                 // overwrite the Adobe PDF settings for this filename and dir
                 try
                 {
-                    dbg.AppendLine("Overwriting the PDF settings in: Registry.CurrentUser.OpenSubKey(Software/Adobe/Acrobat Distiller/PrinterJobControl");
+                    dbgLine("Overwriting the PDF settings in: Registry.CurrentUser.OpenSubKey(Software/Adobe/Acrobat Distiller/PrinterJobControl");
                     var pjcKey = Registry.CurrentUser.OpenSubKey(@"Software\Adobe\Acrobat Distiller\PrinterJobControl", true);
 
                     // get the process file path
                     Process p = Process.GetCurrentProcess();
                     string exePath = p.MainModule.FileName;
-                    dbg.AppendLine("Exe path: " + exePath);
+                    dbgLine("Exe path: " + exePath);
 
                     pjcKey?.SetValue(exePath, fullFilePath);
                     pjcKey?.SetValue("LastPdfPortFolder - Revit.exe", tbSaveToDir.Text);
@@ -470,10 +513,15 @@ namespace RidgeRibbon.ViewSheetInfo
                 catch (Exception ex)
                 {
                     TaskDialog.Show("ERROR printing sheet " + ps.Filename, "Couldn't access PDF driver registry settings to rename file.");
-                    dbg.AppendLine("Error changing PDF driver registry settings to rename file. Continuing through viewsheets. Error message: ");
-                    dbg.AppendLine(ex.Message);
+                    dbgLine("Error changing PDF driver registry settings to rename file. Continuing through viewsheets. Error message: ");
+                    dbgLine(ex.Message);
                     continue;
                 }
+                
+
+                
+
+
 
 
                 // delete file if exists. will prevent prompt for override existing
@@ -482,48 +530,61 @@ namespace RidgeRibbon.ViewSheetInfo
                     if (File.Exists(fullFilePath))
                     {
                         File.Delete(fullFilePath);
-                        dbg.AppendLine("Found an existing file, this will be deleted if not currently open in Adobe Acrobat Reader etc.");
+                        dbgLine("Found an existing file, this will be deleted if not currently open in Adobe Acrobat Reader etc.");
                     }
                 } catch (Exception ex)
                 {
                     TaskDialog.Show("Error overwriting file", ex.Message + " Close any open instances of this file (in Adobe Acrobat, for example) and try again." + "\r\n\r\n"
                         + "To avoid getting this error, uncheck \"View Adobe PDF results\" in Start Menu -> Printers & Scanners -> Adobe PDF -> Manage -> Printing Preferences");
-                    dbg.AppendLine("Error deleting existing pdf file. Continuing through viewsheets. Error message: ");
-                    dbg.AppendLine(ex.Message);
+                    dbgLine("Error deleting existing pdf file. Continuing through viewsheets. Error message: ");
+                    dbgLine(ex.Message);
                     continue;
                 }
 
-                m_printMgr.SubmitPrint();
-                dbg.AppendLine("||||| Print Submitted ||||||");
+                try
+                {
+                    dbgLine("||||| Print Submitted ||||||");
+                    m_printMgr.SubmitPrint();
+                }
+                catch (Exception ex)
+                {
+                    dbgLine("SubmitPrint() failed. This sheet won't print. Continuing through viewsheets. Message reads:");
+                    dbgLine(ex.Message);
+                    TaskDialog.Show("Error","Error submitting print for " + ps.Filename + ". Error message reads: " + ex.Message + "\r\n\r\n" + "This one won't print. Continuing through list of sheets.");
+                    continue;
+                }
+                
 
                 using (Transaction cleanupTran = new Transaction(m_doc, "cleanupTransation"))
                 {
                     cleanupTran.Start();
-                    dbg.AppendLine("Starting CleanUp Transaction");
-
+                    dbgLine("Starting CleanUp Transaction");
+                    /*
                     var viewSheetSettings = m_printMgr.ViewSheetSetting;
                     foreach (var viewSheetSetToDelete in (from element in new FilteredElementCollector(m_doc).OfClass(typeof(ViewSheetSet)).ToElements()
                                                           where element.Name.Contains("_tmp") && element.IsValidObject
                                                           select element as ViewSheetSet).ToList().Distinct())
                     {
-                        dbg.AppendLine("Cleanup operation on ViewSheetSets. Deleting temp viewsheetset _tmp" + ps.Filename + "...");
+                        dbgLine("Cleanup operation on ViewSheetSets. Deleting temp viewsheetset _tmp" + tmpGuid.ToString() + ps.Filename + "...");
                         //viewSheetSettings.CurrentViewSheetSet = m_printMgr.ViewSheetSetting.InSession;
                         viewSheetSettings.CurrentViewSheetSet = viewSheetSetToDelete as ViewSheetSet;
                         try
                         {
                             m_printMgr.ViewSheetSetting.Delete();
-                            dbg.AppendLine("Deleting ViewSheetSetting");
+                            dbgLine("Deleting ViewSheetSetting");
 
                         }
                         catch (Exception ex)
                         {
                             //TaskDialog.Show("deleting temp viewsheetsetting", "failed to delete viewsheetset _tmp" + ps.Filename);
-                            dbg.AppendLine("Error deleting ViewSheetSetting _tmp" + ps.Filename + ". Failing silently. Error message: ");
-                            dbg.AppendLine(ex.Message);
+                            dbgLine("Error deleting ViewSheetSetting _tmp" + tmpGuid.ToString() + ps.Filename + ". Failing silently. Error message: ");
+                            dbgLine(ex.Message);
                         }
                     }
-
+                    */
                     cleanupTran.Commit();
+
+                    
                 }
 
                     
@@ -532,7 +593,7 @@ namespace RidgeRibbon.ViewSheetInfo
                 // once we've printed the PDF, let's export a DWG file into the same location (if the user wants it)
                 if (cbDwgExport.Checked)
                 {
-                    dbg.AppendLine("DWG option has been checked by user.");
+                    dbgLine("DWG option has been checked by user.");
                     DWGExportOptions dwgExportOptions = new DWGExportOptions();
                     dwgExportOptions.MergedViews = true;
                     dwgExportOptions.SharedCoords = true;
@@ -544,28 +605,37 @@ namespace RidgeRibbon.ViewSheetInfo
                     views.Add(thisViewForExport.Id);
 
                     bool dwgSuccess = m_doc.Export(tbSaveToDir.Text, ps.Filename + ".dwg", views, dwgExportOptions);
-                    dbg.AppendLine("DWG export success status is: " + dwgSuccess.ToString());
+                    dbgLine("DWG export success status is: " + dwgSuccess.ToString());
                 }
 
-                dbg.AppendLine();
-                dbg.AppendLine("******* end of viewsheet ******");
-                dbg.AppendLine();
+                dbgLine(" ");
+                dbgLine("******* end of viewsheet ******");
+                dbgLine(" ");
 
+
+
+                
+
+            
+                
             }
 
             // save the file output directory settings for next time (in case location has been pasted in)
             Properties.Settings.Default.OutputDirectory = tbSaveToDir.Text;
             Properties.Settings.Default.Save();
 
+            // close the views that have been opened
+            IList<UIView> uiviews = uidoc.GetOpenUIViews();
+            foreach (UIView uiview in uiviews)
+            {
+                // close any that weren't in the original list of open views??
+            }
+
             // when finished, exit the form
             this.Close();
 
-            // show the debug report if the user has checked the box
-            if (cbDbgReport.Checked)
-            {
-                Debug debug = new Debug(dbg.ToString());
-                debug.Show();
-            }
+            
+            
         }
 
         private void folderBrowserDialog1_HelpRequest_1(object sender, EventArgs e)
@@ -705,6 +775,25 @@ namespace RidgeRibbon.ViewSheetInfo
         {
             Properties.Settings.Default.VectorProcessing = cbVector.Checked;
             Properties.Settings.Default.Save();
+        }
+
+        private void dbgLine(string line)
+        {
+            tbDebug.AppendText("\r\n");
+            tbDebug.AppendText(line);
+
+            if (cbDbgReport.Checked)
+            {
+                // save and update a text file in the output directory with the contents of the debug report. Constructor below will create the file if it does not exist, or add lines to it if it does.
+                string filepath = Path.Combine(tbSaveToDir.Text, "debugReport.txt");
+
+                using (var tw = new StreamWriter(filepath, true))
+                {
+                    tw.WriteLine(line);
+                }
+            }
+            
+            
         }
     }
 }

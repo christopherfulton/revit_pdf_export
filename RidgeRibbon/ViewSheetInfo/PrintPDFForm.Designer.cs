@@ -47,7 +47,6 @@
             this.lblCurrentPrinter = new System.Windows.Forms.Label();
             this.tbSaveToDir = new System.Windows.Forms.TextBox();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.btnFormatSave = new System.Windows.Forms.Button();
@@ -56,14 +55,16 @@
             this.btnParameterAdd = new System.Windows.Forms.Button();
             this.tbFileNameFormat = new System.Windows.Forms.TextBox();
             this.cbParameter = new System.Windows.Forms.ComboBox();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.tbDebug = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSheets)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvToPrint)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.gbUsingPrinter.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // dgvSheets
@@ -78,7 +79,7 @@
             this.dgvSheets.Location = new System.Drawing.Point(3, 22);
             this.dgvSheets.Name = "dgvSheets";
             this.dgvSheets.RowTemplate.Height = 28;
-            this.dgvSheets.Size = new System.Drawing.Size(1184, 425);
+            this.dgvSheets.Size = new System.Drawing.Size(1293, 528);
             this.dgvSheets.TabIndex = 2;
             this.dgvSheets.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSheets_CellContentClick);
             // 
@@ -96,7 +97,7 @@
             this.dgvToPrint.Name = "dgvToPrint";
             this.dgvToPrint.ReadOnly = true;
             this.dgvToPrint.RowTemplate.Height = 28;
-            this.dgvToPrint.Size = new System.Drawing.Size(472, 354);
+            this.dgvToPrint.Size = new System.Drawing.Size(559, 503);
             this.dgvToPrint.TabIndex = 4;
             // 
             // btnPrint
@@ -121,6 +122,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.tbDebug);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.cbVector);
             this.groupBox2.Controls.Add(this.cbDbgReport);
@@ -135,9 +137,9 @@
             this.groupBox2.Controls.Add(this.gbUsingPrinter);
             this.groupBox2.Controls.Add(this.tbSaveToDir);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.groupBox2.Location = new System.Drawing.Point(475, 22);
+            this.groupBox2.Location = new System.Drawing.Point(562, 22);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(712, 354);
+            this.groupBox2.Size = new System.Drawing.Size(728, 503);
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Options";
@@ -169,12 +171,12 @@
             this.cbDbgReport.Checked = true;
             this.cbDbgReport.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbDbgReport.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbDbgReport.Location = new System.Drawing.Point(569, 246);
+            this.cbDbgReport.Location = new System.Drawing.Point(545, 244);
             this.cbDbgReport.Name = "cbDbgReport";
             this.cbDbgReport.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.cbDbgReport.Size = new System.Drawing.Size(126, 21);
+            this.cbDbgReport.Size = new System.Drawing.Size(160, 21);
             this.cbDbgReport.TabIndex = 11;
-            this.cbDbgReport.Text = "(debug report)";
+            this.cbDbgReport.Text = "(save debug report)";
             this.cbDbgReport.UseVisualStyleBackColor = true;
             this.cbDbgReport.CheckedChanged += new System.EventHandler(this.cbDbgReport_CheckedChanged);
             // 
@@ -282,24 +284,14 @@
             this.folderBrowserDialog1.SelectedPath = "U:\\";
             this.folderBrowserDialog1.HelpRequest += new System.EventHandler(this.folderBrowserDialog1_HelpRequest_1);
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.dgvSheets);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox1.Location = new System.Drawing.Point(0, 106);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1190, 450);
-            this.groupBox1.TabIndex = 10;
-            this.groupBox1.TabStop = false;
-            // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.dgvToPrint);
             this.groupBox3.Controls.Add(this.groupBox2);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.groupBox3.Location = new System.Drawing.Point(0, 556);
+            this.groupBox3.Location = new System.Drawing.Point(3, 550);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(1190, 379);
+            this.groupBox3.Size = new System.Drawing.Size(1293, 528);
             this.groupBox3.TabIndex = 11;
             this.groupBox3.TabStop = false;
             // 
@@ -314,7 +306,7 @@
             this.groupBox4.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox4.Location = new System.Drawing.Point(0, 0);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(1190, 106);
+            this.groupBox4.Size = new System.Drawing.Size(1299, 106);
             this.groupBox4.TabIndex = 12;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "File Naming Format";
@@ -379,14 +371,38 @@
             this.cbParameter.TabIndex = 10;
             this.cbParameter.Visible = false;
             // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.dgvSheets);
+            this.groupBox6.Controls.Add(this.groupBox3);
+            this.groupBox6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox6.Location = new System.Drawing.Point(0, 106);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(1299, 1081);
+            this.groupBox6.TabIndex = 13;
+            this.groupBox6.TabStop = false;
+            // 
+            // tbDebug
+            // 
+            this.tbDebug.BackColor = System.Drawing.SystemColors.Menu;
+            this.tbDebug.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tbDebug.Font = new System.Drawing.Font("Courier New", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbDebug.ForeColor = System.Drawing.SystemColors.WindowFrame;
+            this.tbDebug.Location = new System.Drawing.Point(10, 364);
+            this.tbDebug.Multiline = true;
+            this.tbDebug.Name = "tbDebug";
+            this.tbDebug.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tbDebug.Size = new System.Drawing.Size(712, 144);
+            this.tbDebug.TabIndex = 14;
+            this.tbDebug.Text = "Debug Report...";
+            // 
             // PrintPDFForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1190, 935);
-            this.Controls.Add(this.groupBox1);
+            this.ClientSize = new System.Drawing.Size(1299, 1187);
+            this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox4);
-            this.Controls.Add(this.groupBox3);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "PrintPDFForm";
@@ -401,10 +417,10 @@
             this.groupBox5.PerformLayout();
             this.gbUsingPrinter.ResumeLayout(false);
             this.gbUsingPrinter.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -421,7 +437,6 @@
         private System.Windows.Forms.TextBox tbSaveToDir;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.GroupBox gbUsingPrinter;
@@ -438,5 +453,7 @@
         private System.Windows.Forms.CheckBox cbDbgReport;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox cbVector;
+        private System.Windows.Forms.TextBox tbDebug;
+        private System.Windows.Forms.GroupBox groupBox6;
     }
 }
